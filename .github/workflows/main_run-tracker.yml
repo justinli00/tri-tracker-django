@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'run-tracker'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D0FD7EAC0ECA45E5AE8834C2FEF1B41B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9A9E5BE593784B37814920244C9FA549 }}
