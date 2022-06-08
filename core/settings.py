@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-leq_8_vfu-)j#r-o+a@q&0az66m@d==dqx*vfhnclt6$m46b%q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
-#ALLOWED_HOSTS = ['run-tracker.azurewebsites.net'] 
+#ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['run-tracker.azurewebsites.net'] 
 
 # Application definition
 
