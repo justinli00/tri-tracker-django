@@ -1,10 +1,9 @@
-import re
 from blog.models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 
 from rest_framework import generics, status, mixins
 from rest_framework.response import Response
-from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAdminUser, DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly, IsAuthenticated
 
 #permission classes
 class UserPermission(BasePermission):
@@ -17,15 +16,24 @@ class UserPermission(BasePermission):
         else:
             return obj.author == request.user
         
+
 #gets all PUBLISHED posts -- ignores draft posts
 class PostList(generics.ListCreateAPIView):
-    
+
+    permission_classes = [IsAuthenticated]    
     queryset = Post.postobjects.all()
     serializer_class = PostSerializer
 
+    #overloaded to allow for unauthorized users to read
+    def get(self, request, format=None):
+        return self.list(request, format)
+
     #overloaded debugging methods with prints
     def post(self, request, format=None):
-        serializer = PostSerializer(data = request.data)
+        if request.auth is None:
+            return Response("PostList: to use POST method, user must be authenticated.", status=status.HTTP_401_UNAUTHORIZED)
+        
+        serializer = PostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,8 +50,8 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView, UserPermission):
     #this doesn't override the GET method (duh)
     def get_post(self, pk):
         return Post.objects.get(pk=pk)
-    def put(self, request, pk, format=None):      
-        serializer = PostSerializer(self.get_post(pk), data = request.data)
+    def put(self, request, pk, format=None):  
+        serializer = PostSerializer(self.get_post(pk), data=request.data)
         if serializer.is_valid():
             #check for validation
             obj = Post.objects.get(pk=pk)
@@ -66,6 +74,7 @@ class CommentList(generics.ListCreateAPIView):
 #does not allow posting, since there's no elegant way to ensure that incoming comment has correct parent post (that I know of) 
 class PostCommentList(generics.ListAPIView):
     
+    permission_classes = [IsAuthenticatedOrReadOnly]    
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
     

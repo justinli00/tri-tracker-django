@@ -1,7 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 # Create your models here.
 
@@ -30,7 +30,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length=250, unique_for_date='published')
     published = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='blog_posts')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='blog_posts')
     status = models.CharField(
         max_length=10, choices=options, default='published')
     
@@ -66,7 +66,7 @@ class Comment(models.Model):
         
     published = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comment_author') 
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_author') 
     parent_post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comment_post')
     content = models.TextField()
@@ -74,4 +74,4 @@ class Comment(models.Model):
     objects = models.Manager()
     
     def __str__(self):
-        return '%s - %s: %s' % (self.parent_post.title, self.author.username, self.published)
+        return 'Re: %s - %s: %s' % (self.parent_post.title, self.author.user_name, self.published)
