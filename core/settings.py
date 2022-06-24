@@ -189,5 +189,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", #TODO add deployed react webapp!
+    "http://tri-tracker.azurewebsites.net/",
 ]
