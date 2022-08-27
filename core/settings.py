@@ -190,5 +190,5 @@ MEDIA_URL = '/media/'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", 
-    "http://tri-tracker-frontend.azurewebsites.net/",
+    "https://tri-tracker-frontend.azurewebsites.net/",
 ]
